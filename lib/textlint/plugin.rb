@@ -12,15 +12,15 @@ module Danger
   #
   # You should replace these comments with a public description of your library.
   #
-  # @example Run textlint and send as inline comment.
+  # @example Run textlint and send violations as inline comment.
   #
-  #          textlint.lint "./articles/*.md"
-  #          textlint.lint "./articles/*.md"
+  #          # Lint added and modified files only
+  #          textlint.lint
   #
-  # @example Keep severity until warning.
+  # @example Keep severity until warning. It allows merging pull request if there are violations remaining.
   #
   #          textlint.max_severity = "warn"
-  #          textlint.lint "./articles/*.md"
+  #          textlint.lint
   #
   # @see  Kesin11/danger-textlint
   # @tags lint, textlint
@@ -36,12 +36,10 @@ module Danger
     attr_accessor :max_severity
 
     # Execute textlint and send comment
-    # @param [String]
-    #         textlint target file(OR dir) path
     # @return [void]
-    def lint(target_path)
+    def lint
       bin = textlint_path
-      result_json = run_textlint(bin, target_path)
+      result_json = run_textlint(bin, target_files)
       errors = parse(result_json)
       send_comment(errors)
     end
@@ -79,17 +77,21 @@ module Danger
       File.exist?(local) ? local : find_executable("textlint")
     end
 
-    def textlint_command(bin, target_path)
+    def textlint_command(bin, target_files)
       command = "#{bin} -f json"
       command << " -c #{config_file}" if config_file
-      command = "#{command} #{target_path}"
+      command = "#{command} #{target_files.join(' ')}"
       p command
       command
     end
 
-    def run_textlint(bin, target_path)
-      command = textlint_command(bin, target_path)
+    def run_textlint(bin, target_files)
+      command = textlint_command(bin, target_files)
       `#{command}`
+    end
+
+    def target_files
+      ((git.modified_files - git.deleted_files) + git.added_files)
     end
 
     def send_comment(errors)

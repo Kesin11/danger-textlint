@@ -9,6 +9,9 @@ module Danger
       # stub
       allow(Dir).to receive(:pwd).and_return("/Users/your/github/sample_repository")
       allow(@textlint).to receive(:textlint_path).and_return("./node_modules/.bin/textlint")
+      allow(@textlint.git).to receive(:added_files).and_return([])
+      allow(@textlint.git).to receive(:modified_files).and_return([])
+      allow(@textlint.git).to receive(:deleted_files).and_return([])
     end
 
     let(:fixture) do
@@ -96,6 +99,29 @@ module Danger
             Violation.new(expect_message, false, "articles/1.md", 3)
           )
         end
+      end
+    end
+
+    describe ".target_files" do
+      let(:file1) { "articles/1.md" }
+      let(:file2) { "articles/2.md" }
+      let(:file3) { "articles/3.md" }
+
+      before do
+        allow(@textlint.git).to receive(:added_files).and_return([file1])
+        allow(@textlint.git).to receive(:modified_files).and_return([file2])
+      end
+
+      it "are add and modified files only" do
+        allow(@textlint.git).to receive(:deleted_files).and_return([])
+
+        expect(@textlint.send(:target_files)).to match_array([file1, file2])
+      end
+
+      it "are also include removed file" do
+        allow(@textlint.git).to receive(:deleted_files).and_return([file3])
+
+        expect(@textlint.send(:target_files)).to match_array([file1, file2])
       end
     end
   end
