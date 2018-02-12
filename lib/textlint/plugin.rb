@@ -54,9 +54,7 @@ module Danger
     def textlint_command(bin, target_files)
       command = "#{bin} -f json"
       command << " -c #{config_file}" if config_file
-      command = "#{command} #{target_files.join(' ')}"
-      p command
-      command
+      return "#{command} #{target_files.join(' ')}"
     end
 
     def run_textlint(bin, target_files)
