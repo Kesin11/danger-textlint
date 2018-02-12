@@ -40,18 +40,24 @@ module Danger
       bin = textlint_path
       result_json = run_textlint(bin, target_path)
       errors = parse(result_json)
+      send_comment(errors)
     end
 
     def parse(json)
       result = JSON(json)
+      dir = "#{Dir.pwd}/"
+      severity_method = {
+        1 => "warn",
+        2 => "fail"
+      }
 
       result.flat_map do |file|
         file_path = file["filePath"]
         file["messages"].map do |message|
           {
-            file_path: file_path,
+            file_path: file_path.gsub(dir, ""),
             line: message["line"],
-            severity: 2,
+            severity: severity_method[message["severity"]],
             message: "#{message['message']}(#{message['ruleId']})"
           }
         end
@@ -74,6 +80,12 @@ module Danger
     def run_textlint(bin, target_path)
       command = textlint_command(bin, target_path)
       `#{command}`
+    end
+
+    def send_comment(errors)
+      errors.each do |error|
+        send(error[:severity], error[:message], file: error[:file_path], line: error[:line])
+      end
     end
   end
 end

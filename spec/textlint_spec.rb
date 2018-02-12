@@ -12,9 +12,15 @@ module Danger
       before do
         @dangerfile = testing_dangerfile
         @textlint = @dangerfile.textlint
+
+        allow(Dir).to receive(:pwd).and_return("/Users/your/github/sample_repository")
       end
 
       describe ".parse" do
+        subject(:expect_message) do
+          "文末が\"。\"で終わっていません。(preset-ja-technical-writing/ja-no-mixed-period)"
+        end
+
         subject(:errors) do
           fixture_path = File.expand_path("../fixtures/textlint_result.json", __FILE__)
           fixture = File.read(fixture_path)
@@ -28,12 +34,38 @@ module Danger
 
         it "is mapped to be follow hash about index 0" do
           expected = {
-            file_path: "/Users/your/github/sample_repository/articles/1.md",
+            file_path: "articles/1.md",
             line: 3,
-            severity: 2,
-            message: "文末が\"。\"で終わっていません。(preset-ja-technical-writing/ja-no-mixed-period)"
+            severity: "fail",
+            message: expect_message
           }
           expect(errors[0]).to eq(expected)
+        end
+      end
+
+      describe ".lint" do
+        subject(:expect_message) do
+          "文末が\"。\"で終わっていません。(preset-ja-technical-writing/ja-no-mixed-period)"
+        end
+
+        before do
+          fixture_path = File.expand_path("../fixtures/textlint_result.json", __FILE__)
+          fixture = File.read(fixture_path)
+          allow(@textlint).to receive(:run_textlint).and_return fixture
+
+          @textlint.lint
+        end
+
+        it "status_report" do
+          status_report = @textlint.status_report
+          expect(status_report[:errors].size).to be > 0
+        end
+
+        it "violation_report" do
+          violation_report = @textlint.violation_report
+          expect(violation_report[:errors][0]).to eq(
+            Violation.new(expect_message, false, "articles/1.md", 3)
+          )
         end
       end
     end
