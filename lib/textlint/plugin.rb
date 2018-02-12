@@ -44,32 +44,6 @@ module Danger
       send_comment(errors)
     end
 
-    # Parse textlint json report
-    # @param [String]
-    #         Report json output by textlint -f json
-    # @return [Array<Hash>]
-    def parse(json)
-      result = JSON(json)
-      dir = "#{Dir.pwd}/"
-      severity_method = {
-        1 => "warn",
-        2 => "fail"
-      }
-
-      result.flat_map do |file|
-        file_path = file["filePath"]
-        file["messages"].map do |message|
-          severity = max_severity == "warn" ? 1 : message["severity"]
-          {
-            file_path: file_path.gsub(dir, ""),
-            line: message["line"],
-            severity: severity_method[severity],
-            message: "#{message['message']}(#{message['ruleId']})"
-          }
-        end
-      end
-    end
-
     private
 
     def textlint_path
@@ -92,6 +66,28 @@ module Danger
 
     def target_files
       ((git.modified_files - git.deleted_files) + git.added_files)
+    end
+
+    def parse(json)
+      result = JSON(json)
+      dir = "#{Dir.pwd}/"
+      severity_method = {
+        1 => "warn",
+        2 => "fail"
+      }
+
+      result.flat_map do |file|
+        file_path = file["filePath"]
+        file["messages"].map do |message|
+          severity = max_severity == "warn" ? 1 : message["severity"]
+          {
+            file_path: file_path.gsub(dir, ""),
+            line: message["line"],
+            severity: severity_method[severity],
+            message: "#{message['message']}(#{message['ruleId']})"
+          }
+        end
+      end
     end
 
     def send_comment(errors)

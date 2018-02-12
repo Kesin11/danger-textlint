@@ -26,7 +26,7 @@ module Danger
 
       context "with default max_severity" do
         subject(:errors) do
-          @textlint.parse(fixture)
+          @textlint.send(:parse, fixture)
         end
 
         it "has 6 errors" do
@@ -47,7 +47,7 @@ module Danger
       context "with .max_severity = 'warn'" do
         subject(:errors) do
           @textlint.max_severity = "warn"
-          @textlint.parse(fixture)
+          @textlint.send(:parse, fixture)
         end
 
         it "all errors severity are warn" do
