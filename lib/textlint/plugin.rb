@@ -12,12 +12,17 @@ module Danger
   #
   # You should replace these comments with a public description of your library.
   #
-  # @example Ensure people are well warned about merging on Mondays
+  # @example Run textlint and send as inline comment.
   #
-  #          my_plugin.warn_on_mondays
+  #          textlint.lint "./articles/*.md"
   #
-  # @see  Kenta Kase/danger-textlint
-  # @tags monday, weekends, time, rattata
+  # @example Keep severity until warning.
+  #
+  #          textlint.max_severity = "warn"
+  #          textlint.lint "./articles/*.md"
+  #
+  # @see  Kesin11/danger-textlint
+  # @tags lint, textlint
   #
   class DangerTextlint < Plugin
     # textlint lint target path
@@ -28,14 +33,13 @@ module Danger
     # @return [String]
     attr_accessor :config_file
 
-    # Max danger reporting severity
-    # default: "fail"
+    # Set max danger reporting severity
+    # choice: nil or "warn"
     # @return [String]
     attr_accessor :max_severity
 
-    # Execute textlint
+    # Execute textlint and send comment
     # @return [void]
-    #
     def lint
       bin = textlint_path
       result_json = run_textlint(bin, target_path)
@@ -43,6 +47,10 @@ module Danger
       send_comment(errors)
     end
 
+    # Parse textlint json report
+    # @param [String]
+    #         Report json output by textlint -f json
+    # @return [Array<Hash>]
     def parse(json)
       result = JSON(json)
       dir = "#{Dir.pwd}/"
