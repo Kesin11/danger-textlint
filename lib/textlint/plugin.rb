@@ -54,10 +54,11 @@ module Danger
       result.flat_map do |file|
         file_path = file["filePath"]
         file["messages"].map do |message|
+          severity = max_severity == "warn" ? 1 : message["severity"]
           {
             file_path: file_path.gsub(dir, ""),
             line: message["line"],
-            severity: severity_method[message["severity"]],
+            severity: severity_method[severity],
             message: "#{message['message']}(#{message['ruleId']})"
           }
         end

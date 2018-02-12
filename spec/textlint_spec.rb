@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require File.expand_path("../spec_helper", __FILE__)
 
 module Danger
@@ -13,59 +11,101 @@ module Danger
         @dangerfile = testing_dangerfile
         @textlint = @dangerfile.textlint
 
+        # stub
         allow(Dir).to receive(:pwd).and_return("/Users/your/github/sample_repository")
+        allow(@textlint).to receive(:textlint_path).and_return("./node_modules/.bin/textlint")
+      end
+
+      let(:fixture) do
+        fixture_path = File.expand_path("../fixtures/textlint_result.json", __FILE__)
+        File.read(fixture_path)
       end
 
       describe ".parse" do
-        subject(:expect_message) do
+        let(:expect_message) do
           "文末が\"。\"で終わっていません。(preset-ja-technical-writing/ja-no-mixed-period)"
         end
 
-        subject(:errors) do
+        let(:fixture) do
           fixture_path = File.expand_path("../fixtures/textlint_result.json", __FILE__)
           fixture = File.read(fixture_path)
-
-          @textlint.parse(fixture)
         end
 
-        it "has 6 errors" do
-          expect(errors.size).to eq(6)
+        context "with default max_severity" do
+          subject(:errors) do
+            @textlint.parse(fixture)
+          end
+
+          it "has 6 errors" do
+            expect(errors.size).to eq(6)
+          end
+
+          it "is mapped to be follow hash about index 0" do
+            expected = {
+              file_path: "articles/1.md",
+              line: 3,
+              severity: "fail",
+              message: expect_message
+            }
+            expect(errors[0]).to eq(expected)
+          end
         end
 
-        it "is mapped to be follow hash about index 0" do
-          expected = {
-            file_path: "articles/1.md",
-            line: 3,
-            severity: "fail",
-            message: expect_message
-          }
-          expect(errors[0]).to eq(expected)
+        context "with .max_severity = 'warn'" do
+          subject(:errors) do
+            @textlint.max_severity = "warn"
+            @textlint.parse(fixture)
+          end
+
+          it "all errors severity are warn" do
+            expect(errors.all? { |error| error[:severity] == "warn" }).to be true
+          end
         end
       end
 
       describe ".lint" do
-        subject(:expect_message) do
+        let(:expect_message) do
           "文末が\"。\"で終わっていません。(preset-ja-technical-writing/ja-no-mixed-period)"
         end
 
-        before do
-          fixture_path = File.expand_path("../fixtures/textlint_result.json", __FILE__)
-          fixture = File.read(fixture_path)
-          allow(@textlint).to receive(:run_textlint).and_return fixture
+        # stub for simulate to run textlint
+        before { allow(@textlint).to receive(:run_textlint).and_return fixture }
 
-          @textlint.lint
+        context "with default max_severity" do
+          before { @textlint.lint }
+
+          it "status_report" do
+            status_report = @textlint.status_report
+            expect(status_report[:errors].size).to be > 0
+          end
+
+          it "violation_report" do
+            violation_report = @textlint.violation_report
+            expect(violation_report[:errors][0]).to eq(
+              Violation.new(expect_message, false, "articles/1.md", 3)
+            )
+          end
         end
 
-        it "status_report" do
-          status_report = @textlint.status_report
-          expect(status_report[:errors].size).to be > 0
-        end
+        context "with .max_severity = 'warn'" do
+          before do
+            @textlint.max_severity = "warn"
+            @textlint.lint
+          end
 
-        it "violation_report" do
-          violation_report = @textlint.violation_report
-          expect(violation_report[:errors][0]).to eq(
-            Violation.new(expect_message, false, "articles/1.md", 3)
-          )
+          it "status_report" do
+            status_report = @textlint.status_report
+            expect(status_report[:errors].size).to eq(0)
+            expect(status_report[:warnings].size).to be > 0
+          end
+
+          it "violation_report" do
+            violation_report = @textlint.violation_report
+            expect(violation_report[:errors].size).to eq(0)
+            expect(violation_report[:warnings][0]).to eq(
+              Violation.new(expect_message, false, "articles/1.md", 3)
+            )
+          end
         end
       end
     end
