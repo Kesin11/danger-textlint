@@ -1,15 +1,42 @@
 # danger-textlint
 
-A description of danger-textlint.
+[Danger](http://danger.systems/ruby/) plugin for [textlint](https://textlint.github.io/).
 
 ## Installation
 
     $ gem install danger-textlint
 
+`danger-textlint` needs `textlint` to lint your files. Please check the [installation guide](https://github.com/textlint/textlint#installation) and install it before you run Danger.
+
+`danger-textlint` will first try local `node_modules/.bin/textlint` then the global `textlint`.  
+My recommend is installing `textlint` in local. Create package.json (`npm init`) and then install (`npm i textlint`).
+
 ## Usage
 
-    Methods and attributes from this plugin are available in
-    your `Dangerfile` under the `textlint` namespace.
+<blockquote>Run textlint and send violations as inline comment.
+<pre>
+# Lint added and modified files only
+textlint.lint
+</pre>
+</blockquote>
+
+<blockquote>Keep severity until warning. It allows merging pull request if there are violations remaining.
+<pre>
+textlint.max_severity = "warn"
+textlint.lint
+</pre>
+</blockquote>
+
+#### Attributes
+
+`config_file` - .textlintrc path
+
+`max_severity` - Set max danger reporting severity
+choice: nil or "warn"
+
+#### Methods
+
+`lint` - Execute textlint and send comment
 
 ## Development
 
