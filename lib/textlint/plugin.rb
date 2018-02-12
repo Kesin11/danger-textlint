@@ -15,6 +15,7 @@ module Danger
   # @example Run textlint and send as inline comment.
   #
   #          textlint.lint "./articles/*.md"
+  #          textlint.lint "./articles/*.md"
   #
   # @example Keep severity until warning.
   #
@@ -25,10 +26,6 @@ module Danger
   # @tags lint, textlint
   #
   class DangerTextlint < Plugin
-    # textlint lint target path
-    # @return [String]
-    attr_accessor :target_path
-
     # .textlintrc path
     # @return [String]
     attr_accessor :config_file
@@ -39,8 +36,10 @@ module Danger
     attr_accessor :max_severity
 
     # Execute textlint and send comment
+    # @param [String]
+    #         textlint target file(OR dir) path
     # @return [void]
-    def lint
+    def lint(target_path)
       bin = textlint_path
       result_json = run_textlint(bin, target_path)
       errors = parse(result_json)
