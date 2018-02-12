@@ -83,7 +83,9 @@ module Danger
     def textlint_command(bin, target_path)
       command = "#{bin} -f json"
       command << " -c #{config_file}" if config_file
-      "#{command} #{target_path}"
+      command = "#{command} #{target_path}"
+      p command
+      command
     end
 
     def run_textlint(bin, target_path)
