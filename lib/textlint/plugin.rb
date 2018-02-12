@@ -1,3 +1,6 @@
+require "mkmf"
+require "json"
+
 module Danger
   # This is your plugin class. Any attributes or methods you expose here will
   # be available from within your Dangerfile.
@@ -17,17 +20,60 @@ module Danger
   # @tags monday, weekends, time, rattata
   #
   class DangerTextlint < Plugin
+    # textlint lint target path
+    # @return [String]
+    attr_accessor :target_path
 
-    # An attribute that you can read/write from your Dangerfile
-    #
-    # @return   [Array<String>]
-    attr_accessor :my_attribute
+    # .textlintrc path
+    # @return [String]
+    attr_accessor :config_file
 
-    # A method that you can call from your Dangerfile
-    # @return   [Array<String>]
+    # Max danger reporting severity
+    # default: "fail"
+    # @return [String]
+    attr_accessor :max_severity
+
+    # Execute textlint
+    # @return [void]
     #
-    def warn_on_mondays
-      warn 'Trying to merge code on a Monday' if Date.today.wday == 1
+    def lint
+      bin = textlint_path
+      result_json = run_textlint(bin, target_path)
+      errors = parse(result_json)
+    end
+
+    def parse(json)
+      result = JSON(json)
+
+      result.flat_map do |file|
+        file_path = file["filePath"]
+        file["messages"].map do |message|
+          {
+            file_path: file_path,
+            line: message["line"],
+            severity: 2,
+            message: "#{message['message']}(#{message['ruleId']})"
+          }
+        end
+      end
+    end
+
+    private
+
+    def textlint_path
+      local = "./node_modules/.bin/textlint"
+      File.exist?(local) ? local : find_executable("textlint")
+    end
+
+    def textlint_command(bin, target_path)
+      command = "#{bin} -f json"
+      command << " -c #{config_file}" if config_file
+      "#{command} #{target_path}"
+    end
+
+    def run_textlint(bin, target_path)
+      command = textlint_command(bin, target_path)
+      `#{command}`
     end
   end
 end
