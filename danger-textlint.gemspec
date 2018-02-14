@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Textlint::VERSION
   spec.authors       = ['Kesin']
   spec.email         = ['kesin1202000@gmail.com']
-  spec.description   = %q{A short description of danger-textlint.}
-  spec.summary       = %q{A longer description of danger-textlint.}
+  spec.description   = %q{Danger plugin for textlint.}
+  spec.summary       = %q{Danger plugin for textlint.}
   spec.homepage      = 'https://github.com/Kesin11/danger-textlint'
   spec.license       = 'MIT'
 
