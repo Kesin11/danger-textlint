@@ -1,4 +1,7 @@
 # danger-textlint
+[![Gem Version](https://badge.fury.io/rb/danger-textlint.svg)](https://badge.fury.io/rb/danger-textlint)
+[![Build Status](https://travis-ci.org/Kesin11/danger-textlint.svg?branch=master)](https://travis-ci.org/Kesin11/danger-textlint)
+
 
 [Danger](http://danger.systems/ruby/) plugin for [textlint](https://textlint.github.io/).
 
