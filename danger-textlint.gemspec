@@ -6,11 +6,11 @@ require 'textlint/gem_version.rb'
 Gem::Specification.new do |spec|
   spec.name          = 'danger-textlint'
   spec.version       = Textlint::VERSION
-  spec.authors       = ['Kenta Kase']
+  spec.authors       = ['Kesin']
   spec.email         = ['kesin1202000@gmail.com']
   spec.description   = %q{A short description of danger-textlint.}
   spec.summary       = %q{A longer description of danger-textlint.}
-  spec.homepage      = 'https://github.com/Kenta Kase/danger-textlint'
+  spec.homepage      = 'https://github.com/Kesin11/danger-textlint'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
