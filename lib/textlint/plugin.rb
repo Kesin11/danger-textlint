@@ -1,4 +1,4 @@
-require "mkmf"
+# require "mkmf"
 require "json"
 
 module Danger
@@ -40,7 +40,14 @@ module Danger
 
     def textlint_path
       local = "./node_modules/.bin/textlint"
-      File.exist?(local) ? local : find_executable("textlint")
+
+      # NOTE: Danger using method_missing hack for parse 'warn', 'fail' in Dangerfile.
+      # Same issue will occur 'message' when require 'mkmf'. Because 'mkmf' provide 'message' method.
+      # Then, disable find executable textlint until danger fix this issue.
+
+      # File.exist?(local) ? local : find_executable("textlint")
+      raise "textlint not found in ./node_modules/.bin/textlint" unless File.exist?(local)
+      local
     end
 
     def textlint_command(bin, target_files)
