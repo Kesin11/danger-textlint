@@ -100,6 +100,33 @@ module Danger
           )
         end
       end
+
+      context "with .max_comment_num = 5" do
+        let(:max_comment_num) { 5 }
+        before do
+          @textlint.max_comment_num = max_comment_num
+          @textlint.lint
+        end
+
+        it "status_report" do
+          status_report = @textlint.status_report
+          expect(status_report[:errors].size).to eq(max_comment_num)
+        end
+
+        it "violation_report" do
+          violation_report = @textlint.violation_report
+          expect(violation_report[:errors].size).to eq(max_comment_num)
+        end
+
+        it "danger comment" do
+          # find not inline comment
+          comment = @textlint.violation_report[:warnings].find do |warning|
+            warning.message.match(/Textlint reported more than/)
+          end
+
+          expect(comment).not_to be_nil
+        end
+      end
     end
 
     describe ".target_files" do

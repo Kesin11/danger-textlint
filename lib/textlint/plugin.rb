@@ -14,6 +14,11 @@ module Danger
   #          textlint.max_severity = "warn"
   #          textlint.lint
   #
+  # @example Max inline comment number. If you want disable this feature, please set nil. Default: nil
+  #
+  #          textlint.max_comment_num = 5
+  #          textlint.lint
+  #
   # @see  Kesin11/danger-textlint
   # @tags lint, textlint
   #
@@ -26,6 +31,11 @@ module Danger
     # choice: nil or "warn"
     # @return [String]
     attr_accessor :max_severity
+
+    # Set max danger reporting comment number
+    # choice: nil or integer
+    # @return [String]
+    attr_accessor :max_comment_num
 
     # Execute textlint and send comment
     # @return [void]
@@ -88,7 +98,13 @@ module Danger
     end
 
     def send_comment(errors)
-      errors.each do |error|
+      limited_errors = errors
+      if max_comment_num && limited_errors.size > max_comment_num
+        limited_errors = limited_errors.first(max_comment_num)
+        send("warn", "Textlint reported more than #{max_comment_num} problems, but danger-textlint doesn't to display all problems. Please run textlint in your machine and check all problems.")
+      end
+
+      limited_errors.each do |error|
         send(error[:severity], error[:message], file: error[:file_path], line: error[:line])
       end
     end

@@ -153,3 +153,6 @@ Security/YAMLLoad:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
