@@ -82,7 +82,7 @@ module Danger
 
       context "with .max_severity = 'warn'" do
         before do
-          @textlint.max_severity = 'warn'
+          @textlint.max_severity = "warn"
           @textlint.lint
         end
 
