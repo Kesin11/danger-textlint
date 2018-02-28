@@ -82,7 +82,7 @@ module Danger
 
       context "with .max_severity = 'warn'" do
         before do
-          @textlint.max_severity = "warn"
+          @textlint.max_severity = 'warn'
           @textlint.lint
         end
 
@@ -98,6 +98,33 @@ module Danger
           expect(violation_report[:warnings][0]).to eq(
             Violation.new(expect_message, false, "articles/1.md", 3)
           )
+        end
+      end
+
+      context "with .max_comment_num = 5" do
+        let(:max_comment_num) { 5 }
+        before do
+          @textlint.max_comment_num = max_comment_num
+          @textlint.lint
+        end
+
+        it "status_report" do
+          status_report = @textlint.status_report
+          expect(status_report[:errors].size).to eq(max_comment_num)
+        end
+
+        it "violation_report" do
+          violation_report = @textlint.violation_report
+          expect(violation_report[:errors].size).to eq(max_comment_num)
+        end
+
+        it "danger comment" do
+          # find not inline comment
+          comment = @textlint.violation_report[:warnings].find do |warning|
+            warning.message.match(/Textlint reported more than/)
+          end
+
+          expect(comment).not_to be_nil
         end
       end
     end
