@@ -101,7 +101,7 @@ module Danger
       limited_errors = errors
       if max_comment_num && limited_errors.size > max_comment_num
         limited_errors = limited_errors.first(max_comment_num)
-        send("warn", "Textlint reported more than #{max_comment_num} problems but danger-textlint doesn't to show some comments. Please run textlint in your machine and check all problems.")
+        send("warn", "Textlint reported more than #{max_comment_num} problems, but danger-textlint doesn't to display all problems. Please run textlint in your machine and check all problems.")
       end
 
       limited_errors.each do |error|
