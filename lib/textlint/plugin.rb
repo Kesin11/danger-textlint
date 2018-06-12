@@ -40,10 +40,12 @@ module Danger
     # Execute textlint and send comment
     # @return [void]
     def lint
-      bin = textlint_path
-      result_json = run_textlint(bin, target_files)
-      errors = parse(result_json)
-      send_comment(errors)
+      if target_files.size > 0
+        bin = textlint_path
+        result_json = run_textlint(bin, target_files)
+        errors = parse(result_json)
+        send_comment(errors)
+      end
     end
 
     private
