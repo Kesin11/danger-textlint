@@ -64,7 +64,7 @@ module Danger
       # stub for simulate to run textlint
       before do
         allow(@textlint).to receive(:run_textlint).and_return fixture
-        allow(@textlint).to receive(:target_files).and_return ['']
+        allow(@textlint).to receive(:target_files).and_return [""]
       end
 
       context "with default max_severity" do
