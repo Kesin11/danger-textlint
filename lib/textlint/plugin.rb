@@ -40,12 +40,11 @@ module Danger
     # Execute textlint and send comment
     # @return [void]
     def lint
-      unless target_files.empty?
-        bin = textlint_path
-        result_json = run_textlint(bin, target_files)
-        errors = parse(result_json)
-        send_comment(errors)
-      end
+      return if target_files.empty?
+      bin = textlint_path
+      result_json = run_textlint(bin, target_files)
+      errors = parse(result_json)
+      send_comment(errors)
     end
 
     private
