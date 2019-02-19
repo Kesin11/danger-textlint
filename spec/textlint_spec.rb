@@ -1,4 +1,4 @@
-require File.expand_path("../spec_helper", __FILE__)
+require File.expand_path("spec_helper", __dir__)
 
 module Danger
   describe "with Dangerfile" do
@@ -15,7 +15,7 @@ module Danger
     end
 
     let(:fixture) do
-      fixture_path = File.expand_path("../fixtures/textlint_result.json", __FILE__)
+      fixture_path = File.expand_path("fixtures/textlint_result.json", __dir__)
       File.read(fixture_path)
     end
 
