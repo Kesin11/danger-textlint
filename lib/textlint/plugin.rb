@@ -41,6 +41,7 @@ module Danger
     # @return [void]
     def lint
       return if target_files.empty?
+
       bin = textlint_path
       result_json = run_textlint(bin, target_files)
       errors = parse(result_json)
@@ -58,6 +59,7 @@ module Danger
 
       # File.exist?(local) ? local : find_executable("textlint")
       raise "textlint not found in ./node_modules/.bin/textlint" unless File.exist?(local)
+
       local
     end
 
