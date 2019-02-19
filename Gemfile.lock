@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    danger-textlint (1.2.1)
+    danger-textlint (1.2.2)
       danger-plugin-api (~> 1.0)
 
 GEM
