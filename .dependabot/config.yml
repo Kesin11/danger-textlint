@@ -5,10 +5,14 @@ update_configs:
     directory: "/"
     update_schedule: "live"
 
+    allowed_updates:
+      - match:
+          update_type: "security"
     automerged_updates:
       - match:
           dependency_type: "all"
           update_type: "security:patch"
       - match:
           dependency_type: "development"
-          update_type: "in_range"
+          update_type: "semver:minor"
+    version_requirement_updates: "off"
