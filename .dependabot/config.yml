@@ -3,7 +3,7 @@ version: 1
 update_configs:
   - package_manager: "ruby:bundler"
     directory: "/"
-    update_schedule: "live"
+    update_schedule: "monthly"
 
     allowed_updates:
       - match:
