@@ -1,6 +1,6 @@
 # danger-textlint
 [![Gem Version](https://badge.fury.io/rb/danger-textlint.svg)](https://badge.fury.io/rb/danger-textlint)
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FKesin11%2Fdanger-textlint%2Fbadge&style=flat)](https://actions-badge.atrox.dev/Kesin11/danger-textlint/goto)
+[![](https://github.com/Kesin11/danger-textlint/workflows/CI/badge.svg)](https://github.com/Kesin11/danger-textlint/actions)
 
 
 [Danger](http://danger.systems/ruby/) plugin for [textlint](https://textlint.github.io/).
