@@ -7,20 +7,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.4.x', '2.5.x', '2.6.x' ]
+        image: [ 'ruby:2.4', 'ruby:2.5', 'ruby:2.6' ]
+    container:
+      image: ${{ matrix.image }}
 
     steps:
     - uses: actions/checkout@master
-    - name: Set up Ruby version
-      uses: actions/setup-ruby@master
-      with:
-        version: ${{ matrix.ruby }}
 
-    - name: Set up bundler
+    - name: Setup bundler
       run: gem install bundler
     
     - name: bundle install
-      run: bundle install --jobs 4 --retry 3
+      run: bundle install --jobs=4 --retry=3 --path=./vendor
+      
+    - name: Show versions
+      run: |
+        ruby --version
+        bundle --version
 
     - name: test
       run: bundle exec rake spec
