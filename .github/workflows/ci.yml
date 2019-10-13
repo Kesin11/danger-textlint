@@ -14,11 +14,16 @@ jobs:
     steps:
     - uses: actions/checkout@master
 
-    - name: Set up bundler
+    - name: Setup bundler
       run: gem install bundler
     
     - name: bundle install
       run: bundle install --jobs=4 --retry=3 --path=./vendor
+      
+    - name: Show versions
+      run: |
+        ruby --version
+        bundle --version
 
     - name: test
       run: bundle exec rake spec
