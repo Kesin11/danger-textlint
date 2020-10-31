@@ -39,7 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'listen', '3.2.1'
 
   # Help gem version up when release new version
-  spec.add_development_dependency 'bump', '~> 0.9.0'
+  spec.add_development_dependency 'bump', '~> 0.10.0'
 
   # This gives you the chance to run a REPL inside your tests
   # via:
