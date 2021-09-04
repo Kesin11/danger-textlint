@@ -41,6 +41,36 @@ choice: nil or "warn"
 
 `lint` - Execute textlint and send comment
 
+## Usage(Github Actions)
+Puts this code into your .github/workflows/
+
+```yaml
+name: "textlint"
+on:
+  pull_request:
+
+jobs:
+  textlint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup node version
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: 'npm'
+    - run: npm ci
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3
+        bundler-cache: true
+    - run: bundle exec danger
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
 ## Development
 
 1. Clone this repo
