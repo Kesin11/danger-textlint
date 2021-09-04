@@ -1,4 +1,4 @@
-name: Publish release
+name: Publish gems
 
 on:
   workflow_dispatch:
@@ -6,21 +6,43 @@ on:
 jobs:
   publish_release:
     runs-on: ubuntu-latest
+    environment: prod
     steps:
+      # Get next version
       - uses: release-drafter/release-drafter@v5
         id: release-drafter
         # with:
         #   publish: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: echo outputs
+
+      # Publish rubygems
+      - uses: actions/checkout@v2
+      - name: Setup rubygems credentials
         run: |
-          echo "tag: ${{ steps.release-drafter.outputs.tag_name }}"
-          echo "url: ${{ steps.release-drafter.outputs.html_url }}"
-          echo "upload_url: ${{ steps.release-drafter.outputs.upload_url }}"
-      
-      # - uses: actions/checkout@v2
-      # - run: |
-      #     gh release upload ${{ steps.release-drafter.outputs.tag_name }} README.md
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          mkdir -p ~/.gem
+          cat << EOF > ~/.gem/credentials
+          ---
+          :github: Bearer ${GITHUB_TOKEN}
+          :rubygems_api_key: ${RUBYGEMS_API_KEY}
+          EOF
+
+          chmod 0600 ~/.gem/credentials
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3
+          bundler-cache: true
+      - run: |
+          bundle exec bump set ${{ steps.release-drafter.outputs.tag_name }}
+          bundle exec rake release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish github releases
+      - uses: release-drafter/release-drafter@v5
+        with:
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
