@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'guard-rspec', '~> 4.7'
 
   # If you want to work on older builds of ruby
-  spec.add_development_dependency 'listen', '3.7.0'
+  spec.add_development_dependency 'listen', '3.7.1'
 
   # Help gem version up when release new version
   spec.add_development_dependency 'bump', '~> 0.10.0'
