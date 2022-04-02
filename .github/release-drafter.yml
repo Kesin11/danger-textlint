@@ -33,7 +33,7 @@ version-resolver:
       - 'security'
   default: patch
 template: |
-  ## [$PREVIOUS_TAG](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION)
+  ## [v$RESOLVED_VERSION](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION)
 
   ## Changes
 
