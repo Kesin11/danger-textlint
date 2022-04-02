@@ -13,6 +13,7 @@ categories:
       - 'bug'
       - 'security'
   - title: 'Dependencies'
+    collapse-after: 3
     label: 'dependencies'
   - title: 'Documentation'
     label: 'document'
@@ -32,7 +33,7 @@ version-resolver:
       - 'security'
   default: patch
 template: |
-  [Compare $PREVIOUS_TAG with v$RESOLVED_VERSION](https://github.com/Kesin11/danger-textlint/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION)
+  ## [$PREVIOUS_TAG](https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION)
 
   ## Changes
 
